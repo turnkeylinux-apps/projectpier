@@ -8,10 +8,8 @@ DEST=/var/www/projectpier
 
 # unpack projectpier
 unzip /usr/local/src/projectpier.zip -d /usr/local/src/
-mv /usr/local/src/projectpier-* $DEST
+mv /usr/local/src/pp* $DEST
 chown -R www-data:www-data $DEST
-
-sed -i "s/gmt/GMT/" $DEST/public/install/include.php
 
 # workaround innodb crap during build!
 rm -f /var/lib/mysql/ib_logfile*
@@ -39,9 +37,9 @@ a2ensite projectpier
 CURL="curl -c /tmp/cookie -b /tmp/cookie"
 STEP="http://127.0.0.1/public/install/index.php?step="
 
-$CURL ${STEP}1 && $CURL --data "submited=submited" ${STEP}1
-$CURL ${STEP}2 && $CURL --data "submited=submited" ${STEP}2
-$CURL ${STEP}3 && $CURL --data "config_form%5Bdatabase_type%5D=mysql&config_form%5Bdatabase_host%5D=localhost&config_form%5Bdatabase_user%5D=$NAME&config_form%5Bdatabase_pass%5D=$DB_PASSWORD&config_form%5Bdatabase_name%5D=$NAME&config_form%5Bdatabase_prefix%5D=$DB_PREFIX&config_form%5Babsolute_url%5D=http%3A%2F%2F127.0.0.1&submited=submited" ${STEP}3
+$CURL ${STEP}1 && $CURL --data "submitted=submitted" ${STEP}1
+$CURL ${STEP}2 && $CURL --data "submitted=submitted" ${STEP}2
+$CURL ${STEP}3 && $CURL --data "config_form%5Bdatabase_type%5D=mysql&config_form%5Bdatabase_host%5D=localhost&config_form%5Bdatabase_user%5D=$NAME&config_form%5Bdatabase_pass%5D=$DB_PASSWORD&config_form%5Bdatabase_name%5D=$NAME&config_form%5Bdatabase_prefix%5D=$DB_PREFIX&config_form%5Babsolute_url%5D=http%3A%2F%2F127.0.0.1&submitted=submitted" ${STEP}3
 $CURL ${STEP}4
 
 /etc/init.d/apache2 stop
@@ -58,7 +56,7 @@ sed -i "s|'complete installation' \(.*\)|'complete installation' => 'Create admi
 sed -i "s|'complete installation desc' \(.*\)|'complete installation desc' => 'To get started with TurnKey ProjectPier create your administrator account and specify your company name.',|" $CONF
 
 # tweak default theme to display credit text (default is white on white)
-CSSDIR=$DEST/public/assets/themes/default/stylesheets
+CSSDIR=$DEST/public/assets/themes/marine/stylesheets
 for FILE in dialog.css complete_install.css; do
     cat >>$CSSDIR/$FILE<<EOF
 
@@ -69,14 +67,15 @@ for FILE in dialog.css complete_install.css; do
 EOF
 done
 
-# install and configure kampPro as default theme
-unzip /usr/local/src/kampPro.zip -d $DEST/public/assets/themes/
-mv /usr/local/src/complete_install.css $DEST/public/assets/themes/kampPro/stylesheets
+# install and configure kampPro2 as default theme
+THEMES_DIR=$DEST/public/assets/themes
+unzip /usr/local/src/kampPro2.zip -d $THEMES_DIR
+mv /usr/local/src/complete_install.css $THEMES_DIR/kampPro2/stylesheets
 
 mysql --defaults-extra-file=/etc/mysql/debian.cnf <<EOF
 USE $NAME;
 UPDATE pp_config_options SET
-value = 'kampPro'
+value = 'kampPro2'
 WHERE config_handler_class= 'ThemeConfigHandler';
 EOF
 
