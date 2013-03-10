@@ -1,0 +1,22 @@
+#!/bin/bash -ex
+
+dl() {
+    [ "$FAB_HTTP_PROXY" ] && PROXY="--proxy $FAB_HTTP_PROXY"
+    cd $2; curl -L -f -O $PROXY $1; cd -
+}
+
+SRC=/usr/local/src
+
+# projectpier
+VERSION="pp088.zip"
+VERSION_MD5="c267e5b27bd9041f2c7410b5b5e6dcd3"
+URL="http://www.projectpier.org/files/$VERSION"
+dl $URL $SRC
+
+echo "$VERSION_MD5  $VERSION" > $SRC/$VERSION.md5
+cd $SRC; md5sum -c $VERSION.md5; rm $VERSION.md5; cd -
+
+# kamppro2
+dl https://github.com/dbernar1/kampPro2/archive/master.zip $SRC
+mv $SRC/master.zip $SRC/kampPro2.zip
+
