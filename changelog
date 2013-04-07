@@ -1,3 +1,21 @@
+turnkey-projectpier-12.1 (1) turnkey; urgency=low
+
+  * ProjectPier:
+
+    - Removed database table prefix.
+    - Installing latest version of kampPro2 theme at build time.
+
+  * Added phpsh (interative shell for PHP) and php5-cli (generically useful).
+
+  * Hardcoded component versions:
+
+    projectpier     0.8.8
+
+  * Note: Please refer to turnkey-core's changelog for changes common to all
+    appliances. Here we only describe changes specific to this appliance.
+
+ -- Alon Swartz <alon@turnkeylinux.org>  Sun, 07 Apr 2013 08:00:00 +0200
+
 turnkey-projectpier-12.0 (1) turnkey; urgency=low
 
   * ProjectPier:
