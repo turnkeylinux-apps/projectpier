@@ -8,7 +8,7 @@ dl() {
 SRC=/usr/local/src
 
 # projectpier
-#VERSION="pp088wSP2_2014-08-14.zip"
+VERSION="pp088wSP2_2014-08-14.zip"
 #VERSION_MD5="c267e5b27bd9041f2c7410b5b5e6dcd3"
 URL="http://www.projectpier.org/files/$VERSION"
 dl $URL $SRC
