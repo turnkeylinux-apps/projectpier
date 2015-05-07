@@ -8,13 +8,10 @@ dl() {
 SRC=/usr/local/src
 
 # projectpier
-VERSION="pp088.zip"
-VERSION_MD5="c267e5b27bd9041f2c7410b5b5e6dcd3"
+VERSION="pp088wSP2_2014-08-14.zip"
 URL="http://www.projectpier.org/files/$VERSION"
 dl $URL $SRC
 
-echo "$VERSION_MD5  $VERSION" > $SRC/$VERSION.md5
-cd $SRC; md5sum -c $VERSION.md5; rm $VERSION.md5; cd -
 
 # kamppro2
 dl https://github.com/dbernar1/kampPro2/archive/master.zip $SRC

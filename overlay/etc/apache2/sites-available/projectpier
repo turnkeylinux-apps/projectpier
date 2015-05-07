@@ -4,17 +4,17 @@ NameVirtualHost *:443
 <VirtualHost *:80>
     UseCanonicalName Off
     ServerAdmin  webmaster@localhost
-    DocumentRoot /var/www/projectpier
+    DocumentRoot /var/www/projectpier/public
 </VirtualHost>
 
 <VirtualHost *:443>
     SSLEngine on
     SSLCertificateFile /etc/ssl/certs/cert.pem
     ServerAdmin  webmaster@localhost
-    DocumentRoot /var/www/projectpier
+    DocumentRoot /var/www/projectpier/public
 </VirtualHost>
 
-<Directory /var/www/projectpier>
+<Directory /var/www/projectpier/public>
     Options +FollowSymLinks
     AllowOverride All
     order allow,deny
