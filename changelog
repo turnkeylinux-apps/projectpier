@@ -1,6 +1,6 @@
 turnkey-projectpier-14.0 (1) turnkey; urgency=low
 
-  * Latest upstream version of Vanilla (0.8.8 SP2)
+  * Latest upstream version of Project Pier (0.8.8 SP2)
 
   * Note: Please refer to turnkey-core's changelog for changes common to all
     appliances. Here we only describe changes specific to this appliance.
