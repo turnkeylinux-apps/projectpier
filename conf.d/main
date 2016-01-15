@@ -13,11 +13,8 @@ unzip -q $SRC/pp*.zip -d $WEBROOT
 chown -R www-data:www-data $WEBROOT
 rm $SRC/pp*.zip
 
-# workaround innodb crap during build!
-rm -f /var/lib/mysql/ib_logfile*
-
 # start mysql server
-/etc/init.d/mysql start
+service mysql start
 
 # create the database and user
 mysql --defaults-extra-file=/etc/mysql/debian.cnf <<EOF
@@ -35,10 +32,10 @@ a2ensite projectpier
 a2enmod rewrite
 
 # complete projectpier installation
-/etc/init.d/apache2 start
+service apache2 start
 
 CURL="curl -c /tmp/cookie -b /tmp/cookie"
-STEP="http://127.0.0.1/install/index.php?step="
+STEP="http://127.0.0.1/public/install/index.php?step="
 DATA="config_form%5Bdatabase_type%5D=mysql&config_form%5Bdatabase_host%5D=localhost&config_form%5Bdatabase_user%5D=$DB_USER&config_form%5Bdatabase_pass%5D=$DB_PASS&config_form%5Bdatabase_name%5D=$DB_NAME&config_form%5Bdatabase_create%5D=no&config_form%5Bdatabase_charset%5D=utf8&config_form%5Bdatabase_prefix%5D=&submitted=submitted"
 
 
@@ -48,18 +45,10 @@ $CURL ${STEP}3 && $CURL --data $DATA ${STEP}3
 $CURL ${STEP}4
 
 rm -f /tmp/cookie
-/etc/init.d/apache2 stop
 
 # configure projectpier to use a dynamic hostname and ssl
 CONF=$WEBROOT/config/config.php
 sed -i "s|define('ROOT_URL', \(.*\)|\$protocol='http://';\n  if (isset(\$_SERVER['HTTPS'])) { \$protocol='https://'; }\n  define('ROOT_URL', \$protocol.\$_SERVER['HTTP_HOST']);|" $CONF
-
-# tweak text for admin account creation
-CONF=$WEBROOT/language/en_us/site_interface.php
-
-sed -i "s|'complete installation' \(.*\)|'complete installation' => 'Create admin account',|" $CONF
-
-sed -i "s|'complete installation desc' \(.*\)|'complete installation desc' => 'To get started with TurnKey ProjectPier create your administrator account and specify your company name.',|" $CONF
 
 # tweak default theme to display credit text (default is white on white)
 CSSDIR=$WEBROOT/public/assets/themes/marine/stylesheets
@@ -82,14 +71,17 @@ rm -rf $SRC/kampPro2*
 
 mysql --defaults-extra-file=/etc/mysql/debian.cnf <<EOF
 USE $DB_NAME;
-UPDATE config_options SET
-value = 'kampPro2'
-WHERE config_handler_class= 'ThemeConfigHandler';
+UPDATE config_options SET value = 'kampPro2' WHERE name = 'theme';
+UPDATE config_options SET value = 'TurnKey ProjectPier' WHERE name = 'product_name' OR name = 'site_name';
+
+INSERT INTO users VALUES (1,'admin','admin@example.com','af8c475dfb7554b9976628ef11bb02ab29ba5ef4','16e2639d001f7','9847163250',NOW(),0,NOW(),0,NOW(),NOW(),NOW(),1,1,0);
+INSERT INTO contacts VALUES (1,1,1,'admin@example.com','admin','','','','','',0,0,0.00,'','','','','','','','','',NOW(),0,NOW(),0);
+INSERT INTO companies VALUES (1,0,'TurnKey ProjectPier','','','','','','','','','','','','',0,0.00,0,NOW(),1,NOW(),0);
 EOF
 
 # stop mysql server
-/etc/init.d/mysql stop
+service apache2 stop
+service mysql stop
 
-# workaround innodb crap during build!
-rm -f /var/lib/mysql/ib_logfile*
+rm $WEBROOT/cache/autoloader.php
 
